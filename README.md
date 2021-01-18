@@ -48,15 +48,15 @@ Document = Section? Titled-Section*
 
 Titled-Section = Title-Line Section
 
-Section = Tags-Block Empty-Line Body-Block
+Section = Keys-Block Empty-Line Body-Block
 
-Tags-Block = Tag-Line*
+Keys-Block = Key-Value-Line*
 
 Body-Block = Content-Line*
 
 Title-Line = "== " title " ==" (newline)
 
-Tag-Line = tag ": " deinition (newline)
+Key-Value-Line = key ": " value (newline)
 
 Empty-Line = (newline)
 
