@@ -5,10 +5,14 @@ LSF (Lion's Sectioned Format) is a plain-text container format.
 It features:
 * header & content sections
 * titles for all sections (except the header)
-* tags for all sections
-* body text for each section
+* key-value pairs for all sections (optionally)
+* body text for each section (optionally)
 
 LSF files are always UTF-8 encoded.
+
+## Installing
+
+    pip install lsf-lions-sectioned-format
 
 ## An example LSF File
 
@@ -29,12 +33,7 @@ LSF files are always UTF-8 encoded.
     
     Today was Martin Luther King Day.
 
-This file has a header section, and two content sections (2021-01-20, 2021-01-18).  All sections have tags and body text content.
-
-
-# lsf-lions-own-sectioned-format
-
-The "lsf-lions-own-sectioned-format" distribution package contains lsf.py, which reads and write LSF files.
+This file has a header section, and two content sections (`2021-01-20`, `2021-01-18`).  All sections have keys and body text content.
 
 ## Example of Use
 
@@ -47,6 +46,7 @@ Here's reading an LSF file:
     for section in L:
         print(section[lsf.TITLE])
         print("  " + section[lsf.KEYS].get("tags"))
+        print("  " + str(len(section[lsf.BODY])) + " characters in body")
 
 And adding a section:
 
@@ -55,7 +55,6 @@ And adding a section:
 And saving to the file:
 
     lsf.savefile(L, "basic_blog.lsf")
-
 
 ## Section Dictionaries
 
