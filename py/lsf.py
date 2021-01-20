@@ -23,6 +23,8 @@ find_titled(L, title)  -- return sublist of sections with matching title
 find_tagged(L, key, tags)  -- return sublist including these tags
 find_matching(L, key, value)  -- return sublist including key-val pair
 
+append(L, title, D, body)  -- add a new section to a list
+
 sections  -- list of dictionaries, x1 per section, in sequence
   TITLE  -- str, title of the section (or None, if header section)
   KEYS  -- dictionary, keys-to-string values (can be empty)
@@ -157,4 +159,19 @@ def find_matching(L, key, value):
     :rtype: list of dictionaries with keys TITLE, KEYS, and BODY
     """
     return [sec for sec in L if sec[KEYS].get(key) == value]
+
+
+def append(L, title, D, body):
+    """Add a new section to a list.
+
+    :param L: list of section dictionaries representing the LSF file
+    :type L: list of dictionaries with keys TITLE, KEYS, and BODY
+    :param title: title of new section
+    :type title: str (title)
+    :param D: key-value pairs of new section
+    :type D: dict (string key: string value)
+    :param body: body content
+    :type body: str
+    """
+    L.append({TITLE: title, KEYS: D, BODY: body})
 
