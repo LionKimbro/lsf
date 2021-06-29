@@ -61,20 +61,24 @@ And saving to the file:
 Each section has a dictionary of the form:
 
     {TITLE: "...a title...",
+     TITLELN: 10,
      KEYS: {"key1": "value 1", "key2": "value 2", ...},
-     BODY: "Central\nBody\nText\n"}
+     BODY: "Central\nBody\nText\n",
+     BODYLN: 16}
 
 ...which corresponds to section:
 
-    == ...a title... ==
-    key1: value 1
-    key2: value 2
-    ...
-    
-    Central
-    Body
-    Text
-    
+    10. == ...a title... ==
+    11. key1: value 1
+    12. key2: value 2
+        ...
+    15. 
+    16. Central
+    17. Body
+    18. Text
+
+(The line numbers are not part of the source; They are supplied only so that you can see how TITLELN and BODYLN function.)
+
 
 It's safe to manipulate data in place.
 

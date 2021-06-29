@@ -27,16 +27,20 @@ append(L, title, D, body)  -- add a new section to a list
 
 sections  -- list of dictionaries, x1 per section, in sequence
   TITLE  -- str, title of the section (or None, if header section)
+  TITLELN  -- line# of title (or None, if header section)
   KEYS  -- dictionary, keys-to-string values (can be empty)
   BODY  -- string, body for the section (or None)
+  BODYLN  -- line# of beginning of body (if there is one; else None)
 
 encoding  -- encoding for file reading, writing (default: utf-8)
 """
 
 
 TITLE = "TITLE"
+TITLELN = "TITLELN"
 KEYS = "KEYS"
 BODY = "BODY"
+BODYLN = "BODYLN"
 
 encoding = "utf-8"
 
@@ -60,18 +64,24 @@ def loadstr(s):
     :return: list of section dictionaries representing the LSF file
     :rtype: list of dictionaries with keys TITLE, KEYS, and BODY
     """
+    lineno = 0  # line number processing
     L = []  # results
     title = None  # first section has no title
+    titleln = None  # first section has no title
     D = {}  # key-value dictionary being read
     B = []  # body accumulator
+    bodyln = None  # never guaranteed
     def store():
         L.append({TITLE: title,
+                  TITLELN: titleln,
                   KEYS: D.copy(),
-                  BODY: "\n".join(B)})
+                  BODY: "\n".join(B),
+                  BODYLN: bodyln if B else None})
     state = "D"  # state "D": (loading dictionary w/ k-v pairs)
     for line in s.splitlines():
         if state == "D":
-            if line == "": state = "B"  # -> state "B": (body)
+            if line == "":
+                state = "B"; bodyln = lineno+1  # -> state "B": (body)
             else:
                 try: k, v = line.split(": ", 1); D[k] = v
                 except ValueError:
@@ -79,8 +89,10 @@ def loadstr(s):
         else:
             if line.startswith("== ") and line.endswith(" =="):
                 store()  # store previously noted entry
-                D.clear(); del B[:]; title = line[3:-3]; state = "D"
+                D.clear(); del B[:]; title = line[3:-3]
+                titleln = lineno; state = "D"
             else: B.append(line)
+        lineno += 1
     store()
     return L
 
