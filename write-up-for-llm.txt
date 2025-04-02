@@ -1,0 +1,63 @@
+Lion's Sectioned Format (LSF) API Summary
+
+Module name: lsf
+Install with: pip install lsf
+
+Overview:
+LSF is a plain-text format for storing structured data in sections.
+Each file may contain:
+- A header section (no title)
+- Any number of titled sections
+Each section has:
+- Optional title (except header)
+- Key-value pairs (tags, metadata, etc.)
+- Optional body text (separated from keys by a blank line)
+
+Example format:
+--------------------------------------
+tags: blog
+
+This is the header body.
+
+== 2025-04-01 ==
+tags: journal note
+mood: reflective
+
+Today I wrote an LSF entry.
+--------------------------------------
+
+Core API:
+loadfile(path)        # Load sections from file (UTF-8)
+loadstr(string)       # Load sections from string
+savefile(L, path)     # Save sections to file (UTF-8)
+savestr(L)            # Save sections to string
+
+find_titled(L, title)         # Return sections with matching title
+find_tagged(L, key, tags)     # Return sections with tag set including all given (space-separated)
+find_matching(L, key, value)  # Return sections where key maps to value
+append(L, title, D, body)     # Add a section to list
+
+Section structure (dictionary):
+Each section in list L has:
+  TITLE    - str | None
+  TITLELN  - int | None
+  KEYS     - dict[str, str]
+  BODY     - str | None
+  BODYLN   - int | None
+
+Constants:
+  TITLE, TITLELN, KEYS, BODY, BODYLN - exported as string constants
+  encoding - default file encoding ('utf-8')
+
+Gotchas:
+- First section (header) has no title.
+- Key-value pairs must be separated from body by a blank line.
+- Section title line must be: '== Title Here =='
+- Title lines may not appear in the middle of a body.
+
+Typical usage:
+import lsf
+
+L = lsf.loadfile("mydata.lsf")
+lsf.append(L, "2025-04-01", {"tags":"log done"}, "Finished LSF summary.")
+lsf.savefile(L, "mydata.lsf")
